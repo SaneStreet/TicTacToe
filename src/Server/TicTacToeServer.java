@@ -19,7 +19,7 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
     public void start(Stage primaryStage){
         TextArea serverLog = new TextArea();
 
-        //Scene til TextArea taLog
+        //Scene til TextArea serverLog
         Scene scene = new Scene(new ScrollPane(serverLog), 450, 200); //scene med textfelt, bredde og højde
         primaryStage.setTitle("TTTServer"); //TicTacToeServer titel
         primaryStage.setScene(scene); //Placerer scene i stage
