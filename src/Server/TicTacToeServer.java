@@ -63,10 +63,8 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                             serverLog.appendText(new Date() + ": Start a thread for session " + sessionNo++ + '\n'));
 
                     //Start en ny tråd for denne session af to spillere
-
-                    /*
                     new Thread(new HandleASession(player1, player2)).start();
-                    */
+
                 }
             }catch (IOException ex){
                 ex.printStackTrace();
@@ -74,4 +72,32 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
         }).start();
 
     }
+    //Definér threadklassen til at håndtere en ny session for to spillere.
+    class HandleASession implements Runnable, TicTacToeConstants {
+        private Socket player1;
+        private Socket player2;
+
+        //Laver og initialiserer celler
+        private char[][] cell =  new char[3][3];
+
+        //Deklarerer variabler til at modtage og sende data mellem spillere og server
+        private DataInputStream fromPlayer1;
+        private DataOutputStream toPlayer1;
+        private DataInputStream fromPlayer2;
+        private DataOutputStream toPlayer2;
+
+        //Deklarerer variabel der styrer hvornår spillet skal fortsættte eller slutte
+        private boolean continueToPlay = true;
+
+        //Constructor der bruges til at starte en tråd/session
+        public HandleASession(Socket player1, Socket player2) {
+            this.player1 = player1;
+            this.player2 = player2;
+
+            // Initialize cells
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    cell[i][j] = ' ';
+        }
+
 }
