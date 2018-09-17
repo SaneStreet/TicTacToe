@@ -100,4 +100,81 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                     cell[i][j] = ' ';
         }
 
+
+        // commit: 1 --- start --- lasse \\
+//all threads need to implement the run method and this is no diffrent
+//in this method i will write the code that makes the program able to connect two people together
+
+
+
+        public void run() {
+            try {
+
+
+                DataInputStream toPlayer1 = new DataInputStream(player1.getInputStream());
+                DataOutputStream toPlayer1 = new DataOutputStream(player2.getOutputStream());
+                DataInputStream toPlayer2 = new DataInputStream(player1.getInputStream());
+                DataOutputStream toPlayer2 = new DataOutputStream(player2.getOutputStream());
+
+            }   catch (IOException e){
+                System.out.println("der er sket en fejl forbindelsen er brudt");
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// commit: 1 --- start --- lasse \\
+//all threads need to implement the run method and this is no diffrent
+//in this method i will write the code that makes the program able to connect two people together
+public void run(){
+    try {
+        DataInputStream fromPlayer1 = new DataInputStream(player1.getInputStream());
+        DataOutputStream toPlayer1 = new DataOutputStream(player1.getOutputStream());
+        DataInputStream fromPlayer2 = new DataInputStream(player2.getInputStream());
+        DataOutputStream toPlayer2 = new DataOutputStream(player2.getOutputStream());
+
+        //just for comunication to the player that has to start
+        toPlayer1.writeInt(1);
+
+        //now i will make the
+
+        }   catch (IOException e){
+        System.out.println("en fejl er opstået forbindelsen er afbrudt");
+        }
+    }
 }
+
