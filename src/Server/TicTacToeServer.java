@@ -11,7 +11,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public class TicTacToeServer extends Application implements TicTacToeConstants{
+public class eTicTacToeServer extends Application implements TicTacToeConstants{
 
     private int sessionNo = 1; //sessions nummer
 
