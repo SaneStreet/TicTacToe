@@ -1,7 +1,6 @@
 package Server;
 import java.io.*;
 import java.net.*;
-import java.util.Date;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -209,4 +208,6 @@ public class TicTacToeClient extends Application implements TicTacToeConstants {
         int column = fromServer.readInt();
         }
         Platform.runLater(() -> cell[row][column].setToken(otherToken));
+      }
     }
+}
