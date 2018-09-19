@@ -103,11 +103,11 @@ public class TicTacToeServer extends Application implements TicTacToeConstants {
 
 
         // commit: 1 --- start --- lasse \\
-//all threads need to implement the run method and this is no diffrent
-//in this method i will write the code that makes the program able to connect two people together
-//i need a couple of methods before i can write the run method
-//first we need a method that can be used to send and register moves to and from the two players
-        private void sendMove(DataOutputStream out, int row, int column) throws Exception {
+        //all threads need to implement the run method and this is no diffrent
+        //in this method i will write the code that makes the program able to connect two people together
+        //i need a couple of methods before i can write the run method
+        //first we need a method that can be used to send and register moves to and from the two players
+        private void sendMove(DataOutputStream out, int row, int column) throws IOException {
             out.writeInt(row);
             out.writeInt(column);
         }
@@ -125,38 +125,27 @@ public class TicTacToeServer extends Application implements TicTacToeConstants {
         }
 
         private boolean isWon(char token) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
                 if ((cell[i][0] == token) && (cell[i][1] == token) && (cell[i][2] == token)) {
                     return true;
                 }
 
-                for (int j = 0; j < 3; j++) {
-
-                    if ((cell[0][j] == token) && (cell[1][j] == token) && (cell[2][j] == token)) {
+            for (int j = 0; j < 3; j++)
+                if ((cell[0][j] == token) && (cell[1][j] == token) && (cell[2][j] == token)) {
                         return true;
-                    }
-
-                    if ((cell[0][0] == token) && (cell[1][1] == token) && (cell[2][2] == token)) {
-                        return true;
-                    }
-
-                    if ((cell[2][0] == token) && (cell[1][1] == token) && (cell[0][2] == token)) {
-                        return true;
-                    }
-
-                    return false
+                }
+                if ((cell[0][0] == token) && (cell[1][1] == token) && (cell[2][2] == token)) {
+                    return true;
+                }
+                if ((cell[2][0] == token) && (cell[1][1] == token) && (cell[0][2] == token)) {
+                    return true;
                 }
 
+                return false;
             }
-
-
-        }
-
 
         public void run() {
             try {
-
-
                 DataInputStream fromPlayer1 = new DataInputStream(player1.getInputStream());
                 DataOutputStream toPlayer1 = new DataOutputStream(player2.getOutputStream());
                 DataInputStream fromPlayer2 = new DataInputStream(player1.getInputStream());
@@ -167,32 +156,24 @@ public class TicTacToeServer extends Application implements TicTacToeConstants {
 
                 //now i will create the while loop that will keep the two clients in communication with each other for a long time
                 while (true) {
-
                     int row = fromPlayer1.readInt();
                     int column = fromPlayer1.readInt();
                     cell[row][column] = 'X';
 
                     if (isWon('X')) {
-
                         toPlayer1.writeInt(PLAYER1_WON);
                         toPlayer2.writeInt(PLAYER1_WON);
                         sendMove(toPlayer2, row, column);
                         break;
-
                     } else if (isFull()) {
-
                         toPlayer1.writeInt(DRAW);
                         toPlayer2.writeInt(DRAW);
                         sendMove(toPlayer2, row, column);
                         break;
-
                     } else {
-
                         toPlayer2.writeInt(CONTINUE);
                         sendMove(toPlayer2, row, column);
-
                     }
-
                     row = fromPlayer2.readInt();
                     column = fromPlayer2.readInt();
                     cell[row][column] = '0';
@@ -205,17 +186,12 @@ public class TicTacToeServer extends Application implements TicTacToeConstants {
                         toPlayer1.writeInt(CONTINUE);
                         sendMove(toPlayer1, row, column);
                     }
-
-
                 }
-
             } catch (IOException e) {
                 System.out.println("der er sket en fejl forbindelsen er brudt");
                 e.printStackTrace();
             }
-
         }
-
-
     }
 }
+
