@@ -1,6 +1,7 @@
 package Server;
 import java.io.*;
 import java.net.*;
+import java.util.Date;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -13,135 +14,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Control the game on a separate thread
-    new thread(() -> {
-        try {
-            //Get notification from server
-            int player = fromServer.readInt();
-
-            //Am I player 1 or 2??
-            if (player == PLAYER1){
-                myToken = 'X';
-                otherToken = 'O';
-                Platform.runLater(() -> {
-                    lblTitle.setText("Player 1 with token 'X'");
-                    lblStatus.setText("Waiting for player 2 to join");
-                });
-
-                // Receive startup notification from the server
-                fromServer.readInt(); // Whatever read is ignored
-
-                // The other player has joined
-                Platform.runLater(() ->
-                        lblStatus.setText("Player 2 has joined. I start first"));
-
-                // It is my turn
-                myTurn = true;
-            }
-            else if (player == PLAYER2) {
-                myToken = 'O';
-                otherToken = 'X';
-                Platform.runlater(() -> {
-                    lblTitle.setText ("Player 2 with token 'O'");
-                    lblStatus.setText ("Waiting for player 1 to move");
-                });
-            }
-
-            //Continue to play
-            while (continueToPlay) {
-                if (player == PLAYER1) {
-                    waitForPlayerAction(); //wait for player 1 to move
-                    sendMove(); //send player 1's move to the server
-                    receiveInfoFromServer(); //receive info from the server
-                }
-                else if (player == PLAYER2) {
-                    receiveInfoFromServer(); //receive info from the server
-                    waitForPlayerAction(); //wait for player 2 to move
-                    sendMove(); //send Player 2's move to the server.
-                }
-            }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }).start();
-=======
 public class TicTacToeClient extends Application implements TicTacToeConstants {
     //Indicate whether the player has the turn
     private boolean myTurn = false;
@@ -212,11 +84,63 @@ public class TicTacToeClient extends Application implements TicTacToeConstants {
             //Create an output stream to send data to the server
             toServer = new DataOutputStream(socket.getOutputStream());
         }
-        catch (Exception ex){
+        catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-}
+
+    //Control the game on a separate thread
+    new Thread(() -> {
+        try {
+            //Get notification from server
+            int player = fromServer.readInt();
+
+            //Am I player 1 or 2??
+            if (player == PLAYER1){
+                myToken = 'X';
+                otherToken = 'O';
+                Platform.runLater(() -> {
+                    lblTitle.setText("Player 1 with token 'X'");
+                    lblStatus.setText("Waiting for player 2 to join");
+                });
+
+                // Receive startup notification from the server
+                fromServer.readInt(); // Whatever read is ignored
+
+                // The other player has joined
+                Platform.runLater(() ->
+                        lblStatus.setText("Player 2 has joined. I start first"));
+
+                // It is my turn
+                myTurn = true;
+            }
+            else if (player == PLAYER2) {
+                myToken = 'O';
+                otherToken = 'X';
+                Platform.runlater(() -> {
+                    lblTitle.setText ("Player 2 with token 'O'");
+                    lblStatus.setText ("Waiting for player 1 to move");
+                });
+            }
+
+            //Continue to play
+            while (continueToPlay) {
+                if (player == PLAYER1) {
+                    waitForPlayerAction(); //wait for player 1 to move
+                    sendMove(); //send player 1's move to the server
+                    receiveInfoFromServer(); //receive info from the server
+                }
+                else if (player == PLAYER2) {
+                    receiveInfoFromServer(); //receive info from the server
+                    waitForPlayerAction(); //wait for player 2 to move
+                    sendMove(); //send Player 2's move to the server.
+                }
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }).start();
+
 
     /** Wait for player to mark a cell **/
     private void waitForPlayerAction () throws interruptedException {
@@ -283,5 +207,6 @@ public class TicTacToeClient extends Application implements TicTacToeConstants {
         //get the other player's move
         int row = fromServer.readInt();
         int column = fromServer.readInt();
+        }
         Platform.runLater(() -> cell[row][column].setToken(otherToken));
     }
