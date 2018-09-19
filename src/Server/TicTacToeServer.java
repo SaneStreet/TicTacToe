@@ -11,12 +11,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public class TicTacToeServer extends Application implements TicTacToeConstants{
+public class TicTacToeServer extends Application implements TicTacToeConstants {
 
     private int sessionNo = 1; //sessions nummer
 
     @Override //Man skal override start metoden i Application klassen
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         TextArea serverLog = new TextArea();
 
         //Scene til TextArea serverLog
@@ -27,13 +27,13 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
 
         //Threads til at håndtere to spillere i TicTacToe spillet
         new Thread(() -> {
-            try{
+            try {
                 //Opretter server
                 ServerSocket serverSocket = new ServerSocket(8000);
                 Platform.runLater(() -> serverLog.appendText(new Date() + ": Server started at socket " + serverSocket.getLocalPort() + '\n'));
 
                 //Klar til at oprette sessioner for hver af de to spillere
-                while(true){
+                while (true) {
                     Platform.runLater(() -> serverLog.appendText(new Date() + ": Wait for players to join session " + sessionNo + '\n'));
 
                     //Tilslut spiller 1
@@ -50,7 +50,7 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                     //Tilslut spiller 2
                     Socket player2 = serverSocket.accept();
 
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         serverLog.appendText(new Date() + ": Player 2 has joined the session " + sessionNo + '\n');
                         serverLog.appendText("Player 2's IP address " + player2.getInetAddress().getHostAddress() + '\n');
                     });
@@ -66,19 +66,20 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                     new Thread(new HandleASession(player1, player2)).start();
 
                 }
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }).start();
 
     }
+
     //Definér threadklassen til at håndtere en ny session for to spillere.
     class HandleASession implements Runnable, TicTacToeConstants {
         private Socket player1;
         private Socket player2;
 
         //Laver og initialiserer celler
-        private char[][] cell =  new char[3][3];
+        private char[][] cell = new char[3][3];
 
         //Deklarerer variabler til at modtage og sende data mellem spillere og server
         private DataInputStream fromPlayer1;
@@ -113,33 +114,33 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
 
         //then we need a method to determine if the board is full, its important for the logic to work that i call this after every move is mad
         //the same goes for the isWon method
-        private boolean isFull(){
-            for (int i = 0; i < 3; i++){
-                for (int j = 0; j <3; j++){
+        private boolean isFull() {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
                     if (cell[i][j] == ' ')
                         return false;
                 }
             }
-         return true;
+            return true;
         }
 
-        private boolean isWon(char token){
-            for (int i = 0; i < 3; i++){
-                if ((cell[i][0] == token) && (cell[i][1] == token) && (cell[i][2] == token)){
+        private boolean isWon(char token) {
+            for (int i = 0; i < 3; i++) {
+                if ((cell[i][0] == token) && (cell[i][1] == token) && (cell[i][2] == token)) {
                     return true;
                 }
 
-                for (int j = 0; j < 3; j++){
+                for (int j = 0; j < 3; j++) {
 
-                    if ((cell[0][j] == token) && (cell[1][j] == token) && (cell[2][j] == token)){
+                    if ((cell[0][j] == token) && (cell[1][j] == token) && (cell[2][j] == token)) {
                         return true;
                     }
 
-                    if ((cell[0][0] == token) && (cell[1][1] == token) && (cell[2][2] == token)){
+                    if ((cell[0][0] == token) && (cell[1][1] == token) && (cell[2][2] == token)) {
                         return true;
                     }
 
-                    if ((cell[2][0] == token) && (cell[1][1] == token) && (cell[0][2] == token)){
+                    if ((cell[2][0] == token) && (cell[1][1] == token) && (cell[0][2] == token)) {
                         return true;
                     }
 
@@ -150,7 +151,6 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
 
 
         }
-
 
 
         public void run() {
@@ -166,27 +166,27 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                 toPlayer1.writeUTF("det er player1's tur til at vælge");
 
                 //now i will create the while loop that will keep the two clients in communication with each other for a long time
-                while(true){
+                while (true) {
 
                     int row = fromPlayer1.readInt();
                     int column = fromPlayer1.readInt();
-                    cell [row][column] = 'X';
+                    cell[row][column] = 'X';
 
-                    if(isWon('X')){
+                    if (isWon('X')) {
 
                         toPlayer1.writeInt(PLAYER1_WON);
                         toPlayer2.writeInt(PLAYER1_WON);
                         sendMove(toPlayer2, row, column);
                         break;
 
-                    }   else if (isFull()){
+                    } else if (isFull()) {
 
                         toPlayer1.writeInt(DRAW);
                         toPlayer2.writeInt(DRAW);
                         sendMove(toPlayer2, row, column);
                         break;
 
-                    }   else {
+                    } else {
 
                         toPlayer2.writeInt(CONTINUE);
                         sendMove(toPlayer2, row, column);
@@ -197,20 +197,19 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
                     column = fromPlayer2.readInt();
                     cell[row][column] = '0';
 
-                    if (isWon('O')){
+                    if (isWon('O')) {
                         toPlayer1.writeInt(PLAYER2_WON);
                         toPlayer2.writeInt(PLAYER2_WON);
                         sendMove(toPlayer1, row, column);
-                    }   else {
+                    } else {
                         toPlayer1.writeInt(CONTINUE);
-                        sendMove(toPlayer1, row,column);
+                        sendMove(toPlayer1, row, column);
                     }
-
 
 
                 }
 
-            }   catch (IOException e){
+            } catch (IOException e) {
                 System.out.println("der er sket en fejl forbindelsen er brudt");
                 e.printStackTrace();
             }
@@ -218,62 +217,5 @@ public class TicTacToeServer extends Application implements TicTacToeConstants{
         }
 
 
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// commit: 1 --- start --- lasse \\
-//all threads need to implement the run method and this is no diffrent
-//in this method i will write the code that makes the program able to connect two people together
-public void run(){
-    try {
-        DataInputStream fromPlayer1 = new DataInputStream(player1.getInputStream());
-        DataOutputStream toPlayer1 = new DataOutputStream(player1.getOutputStream());
-        DataInputStream fromPlayer2 = new DataInputStream(player2.getInputStream());
-        DataOutputStream toPlayer2 = new DataOutputStream(player2.getOutputStream());
-
-        //just for comunication to the player that has to start
-        toPlayer1.writeInt(1);
-
-        //now i will make the
-
-        }   catch (IOException e){
-        System.out.println("en fejl er opstået forbindelsen er afbrudt");
-        }
     }
 }
-
