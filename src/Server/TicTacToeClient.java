@@ -2,7 +2,6 @@ package Server;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
-import java.awt.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -284,6 +283,10 @@ public class TicTacToeClient extends Application implements TicTacToeConstants {
                 }
             }
         }
+
+    public static void main(String[] args) {
+        launch(args);
     }
+}
 
 
