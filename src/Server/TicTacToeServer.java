@@ -3,7 +3,6 @@ package Server;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -13,7 +12,7 @@ import javafx.stage.Stage;
 
 public class TicTacToeServer extends Application implements TicTacToeConstants {
 
-    private int sessionNo = 1; //sessions nummer
+    private int sessionNo = 1; //session number
 
     @Override //Man skal override start metoden i Application klassen
     public void start(Stage primaryStage) {
@@ -176,7 +175,7 @@ public class TicTacToeServer extends Application implements TicTacToeConstants {
                     }
                     row = fromPlayer2.readInt();
                     column = fromPlayer2.readInt();
-                    cell[row][column] = '0';
+                    cell[row][column] = 'O';
 
                     if (isWon('O')) {
                         toPlayer1.writeInt(PLAYER2_WON);
