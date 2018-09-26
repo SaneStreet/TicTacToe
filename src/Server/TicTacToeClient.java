@@ -25,7 +25,7 @@ public class TicTacToeClient extends Application implements TicTacToeConstants {
     // Indicate the token for the player
     private char myToken = ' ';
 
-    // indicate the token for hte other player
+    // indicate the token for the other player
     private char otherToken = ' ';
 
     // create and initialize cells
